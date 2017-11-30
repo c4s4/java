@@ -1,16 +1,12 @@
 default: run
 
 properties:
-  NAME:       'java'
-  SRC_DIR:    'src'
-  TEST_DIR:   'test'
-  BUILD_DIR:  'build'
-  CLASS_DIR:  '#{BUILD_DIR}/classes'
-  MAIN_CLASS: 'casa.Main'
-  DEPENDENCIES:
-  - group:    junit
-    artifact: junit
-    version:  4.12
+  BUILD_DIR: 'build'
+  JAVA_SRC:  'src'
+  JAVA_TST:  'test'
+  CLASS_DIR: '#{BUILD_DIR}/classes'
+  CLASS_TST: '#{BUILD_DIR}/test'
+  JAVA_MAIN: 'casa.Main'
 
 targets:
 
@@ -18,16 +14,28 @@ targets:
     doc: 'Compile java source files'
     steps:
     - javac:  '**/*.java'
-      source: '#{SRC_DIR}'
+      source: '#{JAVA_SRC}'
       dest:   '#{CLASS_DIR}'
 
-  run:
+  java:
     doc: 'Run java program'
     depends: compile
     steps:
     - classpath: 'classpath'
       classes:   '#{CLASS_DIR}'
-    - $: ['java', '-cp', '#{classpath}', '#{MAIN_CLASS}']
+    - java: '#{JAVA_MAIN}'
+      cp:   '#{classpath}'
+
+  junit:
+    doc: 'Run Junit tests'
+    steps:
+    - classpath: 'classpath'
+      classes:   '#{CLASS_DIR}'
+      depends:   'dependencies.yml'
+      scope:     'test'
+    - javac:  '**/*.java'
+      source: '#{JAVA_TST}'
+      dest:   '#{CLASS_TST}'
 
   clean:
     doc: 'Clean generated files'
