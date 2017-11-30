@@ -3,24 +3,31 @@ default: run
 properties:
   NAME:       'java'
   SRC_DIR:    'src'
+  TEST_DIR:   'test'
   BUILD_DIR:  'build'
   CLASS_DIR:  '#{BUILD_DIR}/classes'
-  MAIN_CLASS: 'test.Main'
+  MAIN_CLASS: 'casa.Main'
+  DEPENDENCIES:
+  - group:    junit
+    artifact: junit
+    version:  4.12
 
 targets:
 
   compile:
     doc: 'Compile java source files'
     steps:
-    - mkdir: '#{CLASS_DIR}'
-    - $: ['javac','-d', '#{CLASS_DIR}',
-          '#{join(find(".", joinpath(SRC_DIR, "**/*.java")), " ")}']
+    - javac:  '**/*.java'
+      source: '#{SRC_DIR}'
+      dest:   '#{CLASS_DIR}'
 
   run:
     doc: 'Run java program'
     depends: compile
     steps:
-    - $: ['java', '-cp', '#{CLASS_DIR}', '#{MAIN_CLASS}']
+    - classpath: 'classpath'
+      classes:   '#{CLASS_DIR}'
+    - $: ['java', '-cp', '#{classpath}', '#{MAIN_CLASS}']
 
   clean:
     doc: 'Clean generated files'

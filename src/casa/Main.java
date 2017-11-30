@@ -1,4 +1,4 @@
-package test;
+package casa;
 
 public class Main {
 

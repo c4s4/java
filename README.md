@@ -5,18 +5,18 @@ This project is a template for a simple Java project.
 
 To get help on build file :
 
-    make
+    neon -info
 
 To compile Java source files :
 
-    make compile
+    neon compile
 
-To run the application :
+To run the Java application :
 
-    make run
+    neon run
 
 To clean generated files :
 
-    make clean
+    neon clean
 
 *Enjoy!*
