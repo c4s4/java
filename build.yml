@@ -1,4 +1,6 @@
-default: java
+default:
+- clean
+- junit
 
 properties:
   BUILD_DIR: 'build'
@@ -28,19 +30,16 @@ targets:
 
   junit:
     doc: 'Run Junit tests'
+    depends: compile
     steps:
-    # compile java test classes
-    - classpath: 'classpath'
-      classes:   '#{CLASS_DIR}'
-      jars:      'lib/*.jar'
+    - classpath:    'classpath'
+      classes:      ['#{CLASS_DIR}', '#{CLASS_TST}']
+      dependencies: 'dependencies.yml'
+      scopes:       'test'
     - javac:  '**/*.java'
       source: '#{JAVA_TST}'
       cp:     '#{classpath}'
       dest:   '#{CLASS_TST}'
-    # run junit on test class
-    - classpath: 'classpath'
-      classes:   ['#{CLASS_DIR}', '#{CLASS_TST}']
-      jars:      'lib/*.jar'
     - java: 'org.junit.runner.JUnitCore'
       cp:   '#{classpath}'
       args: '#{JAVA_MAIN}Test'
